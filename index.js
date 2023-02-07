@@ -27,7 +27,7 @@ async function crossFromBscToEth(smgID) {
   const values = ['1', '1']; // GMPD NFT amount, static 1 for 721
   const chainId = 97;
   const toAddress = '0x4Cf0A877E906DEaD748A41aE7DA8c220E4247D9e';
-  const fee = 0.11; // fee for cross, get from bridge page, static 0.11 bnb for testnet
+  const fee = 0.11; // fee for cross, get from bridge page, fee=baseFee + baseFee*(n-1)*10%
   // ----------------------------------
 
   const crossSc = new ethers.Contract(scAddr[chainId], crossAbi, wallet);
@@ -64,6 +64,7 @@ async function crossFromEthToBsc(smgID) {
   const values = ['1', '1']; // GMPD NFT amount, static 1 for 721
   const chainId = 5;
   const toAddress = '0x4Cf0A877E906DEaD748A41aE7DA8c220E4247D9e';
+  const fee = 0; // fee for cross, get from bridge page, fee=baseFee + baseFee*(n-1)*10%
   // ----------------------------------
 
   const crossSc = new ethers.Contract(scAddr[chainId], crossAbi, wallet);
@@ -81,6 +82,9 @@ async function crossFromEthToBsc(smgID) {
     values,
     nftContractAddr,
     toAddress,
+    {
+      value: ethers.parseUnits(fee.toString(), "ether")
+    }
   )
   await tx.wait();
   console.log('cross from bsc to eth success! wait for destination chain to release!\n\n');
